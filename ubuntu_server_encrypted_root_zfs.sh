@@ -891,6 +891,9 @@ debootstrap_createzfspools_Func() {
         zfs create -o com.sun:auto-snapshot=false "$RPOOL"/var/cache
         zfs create -o com.sun:auto-snapshot=false "$RPOOL"/var/tmp
         chmod 1777 "$mountpoint"/var/tmp
+
+        # For docker, the `overlay2` folder contains all cached layers; we may want to save the rest of `volumes`/etc in snapshots
+        zfs create "$RPOOL"/var/lib/docker
         zfs create -o com.sun:auto-snapshot=false "$RPOOL"/var/lib/docker/overlay2 ##Docker manages its own datasets & snapshots
 
         ##Mount a tempfs at /run
