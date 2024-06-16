@@ -34,6 +34,20 @@ set -euo pipefail
 ##zfs load-key -r -L prompt -a #-r Recursively loads the keys. -a Loads the keys for all encryption roots in all imported pools. -L is for a keylocation or to "prompt" user for an input.
 ##zfs mount -a #Mount all datasets.
 
+##Check for root priviliges
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Please run as root."
+    exit 1
+fi
+
+##Check for EFI boot environment
+if [ -d /sys/firmware/efi ]; then
+    echo "Boot environment check passed. Found EFI boot environment."
+else
+    echo "Boot environment check failed. EFI boot environment not found. Script requires EFI."
+    exit 1
+fi
+
 ##Variables:
 hostname="iron01"              #Name to identify the main system on the network. An underscore is DNS non-compliant.
 remoteaccess_ip="10.0.100.100" #Remote access static IP address to connect to ZFSBootMenu. Not used for automatic IP configuration.
@@ -114,20 +128,6 @@ remoteaccess_netmask="255.255.255.0"      #Remote access subnet mask. Not used f
 mirror_archive="yes"                      #"yes" will select the fastest mirror archive to source packages. "no" to use the default archive.
 install_warning_level="PRIORITY=critical" #"PRIORITY=critical", or "FRONTEND=noninteractive". Pause install to show critical messages only or do not pause (noninteractive). Script still pauses for keyboard selection at the end.
 extra_programs="yes"                      #"yes", or "no". Install additional programs if not included in the ubuntu distro package. Programs: cifs-utils, locate, man-db, openssh-server, tldr.
-
-##Check for root priviliges
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Please run as root."
-    exit 1
-fi
-
-##Check for EFI boot environment
-if [ -d /sys/firmware/efi ]; then
-    echo "Boot environment check passed. Found EFI boot environment."
-else
-    echo "Boot environment check failed. EFI boot environment not found. Script requires EFI."
-    exit 1
-fi
 
 ##Check encryption defined if password defined
 if [ -n "$zfs_root_password" ]; then
