@@ -74,27 +74,28 @@ done
 
 # PASSWORD="testuser"          #Password for user in new install.
 
-while true; do
-    echo
-    read -s -p "ZFS encryption password: " ZFS_ENCRYPT_PASS
-    echo
+# while true; do
+#     echo
+#     read -s -p "ZFS encryption password: " ZFS_ENCRYPT_PASS
+#     echo
 
-    read -s -p "Confirm password: " check_pass
-    echo
+#     read -s -p "Confirm password: " check_pass
+#     echo
 
-    if [ "${ZFS_ENCRYPT_PASS}" = "${check_pass}" ]; then
-        break
-    fi
+#     if [ "${ZFS_ENCRYPT_PASS}" = "${check_pass}" ]; then
+#         break
+#     fi
 
-    echo
-    echo "Passwords do not match. Please try again."
-done
+#     echo
+#     echo "Passwords do not match. Please try again."
+# done
 
-zfs_root_password="${ZFS_ENCRYPT_PASS}" #Password for encrypted root pool. Minimum 8 characters. "" for no password encrypted protection. Unlocking root pool also unlocks data pool, unless the root pool has no password protection, then a separate data pool password can be set below.
-zfs_root_encrypt="native"               #Encryption type. "native" for native zfs encryption. "luks" for luks. Required if there is a root pool password, otherwise ignored.
-locale="en_US.UTF-8"                    #New install language setting.
-timezone="America/New_York"             #New install timezone setting.
-zfs_rpool_ashift="12"                   #Drive setting for zfs pool. ashift=9 means 512B sectors (used by all ancient drives), ashift=12 means 4KiB sectors (used by most modern hard drives), and ashift=13 means 8KiB sectors (used by some modern SSDs).
+# zfs_root_password="${ZFS_ENCRYPT_PASS}" #Password for encrypted root pool. Minimum 8 characters. "" for no password encrypted protection. Unlocking root pool also unlocks data pool, unless the root pool has no password protection, then a separate data pool password can be set below.
+zfs_root_password=""
+zfs_root_encrypt="native"   #Encryption type. "native" for native zfs encryption. "luks" for luks. Required if there is a root pool password, otherwise ignored.
+locale="en_US.UTF-8"        #New install language setting.
+timezone="America/New_York" #New install timezone setting.
+zfs_rpool_ashift="12"       #Drive setting for zfs pool. ashift=9 means 512B sectors (used by all ancient drives), ashift=12 means 4KiB sectors (used by most modern hard drives), and ashift=13 means 8KiB sectors (used by some modern SSDs).
 
 RPOOL="rpool"          #Root pool name.
 topology_root="single" #"single", "mirror", "raid0", "raidz1", "raidz2", or "raidz3" topology on root pool.
@@ -104,10 +105,11 @@ EFI_boot_size="512"    #EFI boot loader partition size in mebibytes (MiB).
 # Should be at least 2x the amount of RAM on the server in MiB
 swap_size="32768" #Swap partition size in mebibytes (MiB). Size of swap will be larger than defined here with Raidz topologies.
 
-datapool="dpool"                          #Non-root drive data pool name.
-topology_data="single"                    #"single", "mirror", "raid0", "raidz1", "raidz2", or "raidz3" topology on data pool.
-disks_data="5"                            #Number of disks in array for data pool. Not used with single topology.
-zfs_data_password="${ZFS_ENCRYPT_PASS}"   #If no root pool password is set, a data pool password can be set here. Minimum 8 characters. "" for no password protection.
+datapool="dpool"       #Non-root drive data pool name.
+topology_data="single" #"single", "mirror", "raid0", "raidz1", "raidz2", or "raidz3" topology on data pool.
+disks_data="5"         #Number of disks in array for data pool. Not used with single topology.
+# zfs_data_password="${ZFS_ENCRYPT_PASS}"   #If no root pool password is set, a data pool password can be set here. Minimum 8 characters. "" for no password protection.
+zfs_data_password=""
 zfs_data_encrypt="native"                 #Encryption type. "native" for native zfs encryption. "luks" for luks. Required if there is a data pool password, otherwise ignored.
 datapoolmount="/mnt/$datapool"            #Non-root drive data pool mount point in new install.
 zfs_dpool_ashift="12"                     #See notes for rpool ashift. If ashift is set too low, a significant read/write penalty is incurred. Virtually no penalty if set higher.
